@@ -9,7 +9,14 @@ Rails.application.routes.draw do
         end
       end
       resources :financial_plans
-      resources :budgets
+      resources :budgets do
+        collection do
+          get 'search'
+        end
+        collection do
+          post 'budget_expenses'
+        end
+      end
       resources :savings
       resources :expenses
 

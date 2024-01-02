@@ -74,3 +74,10 @@ class Api::V1::UsersController < ApplicationController
       params.permit(:name, :email, :password, :password_confirmation, :avatar)
     end
 end
+
+# {
+#   "name": "louis debroglie",
+#   "email": "precious@yahoo.com",
+#   "password": "eaagleclaw",
+#   "password_confirmattion": "eagleclaw"
+# }

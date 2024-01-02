@@ -18,6 +18,31 @@ class Api::V1::BudgetsController < ApplicationController
     render json: @budgets
   end
 
+  def search
+    query = Budget.all
+    query = query.where("name ILIKE ?", "%#{params[:name]}%") if params[:name].present?
+    query = query.where("purpose ILIKE ?", "%#{params[:purpose]}%") if params[:purpose].present?
+    query = query.where(target_amount: params[:target_amount]) if params[:target_amount].present?
+    query = query.where(category: params[:category]) if params[:category].present?
+    query = query.where(target_date: params[:target_date]) if params[:target_date].present?
+    query = query.where(contribution_type: params[:contribution_type]) if params[:contribution_type].present?
+    query = query.where(contribution_amount: params[:contribution_amount]) if params[:contribution_amount].present?
+    query = query.where(user_id: params[:user_id]) if params[:user_id].present?
+    results = query.limit(20)
+    render json: results
+  end
+
+  def budget_expenses
+    budge_expense_params = params.permit(:name, :amount, :purpose, :budget_id)
+    @budget_expense = BudgetExpense.new(budge_expense_params)
+    if @budget_expense.save
+      render json: @budget_expense, status: :created, location: @budget_expense
+    else
+      render json: @budget_expense.errors, status: :unprocessable_entity
+    end
+  end
+
+  
   # POST /budgets
 
   # def create
@@ -62,6 +87,18 @@ class Api::V1::BudgetsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def budget_params
-      params.require(:budget).permit(:name, :purpose, :target_amount, :category, :target_date, :contribution_type, :contribution_amount, :user_id)
+      params.permit(:name, :purpose, :target_amount, :category, :target_date, :contribution_type, :contribution_amount, :user_id)
     end
 end
+
+
+# {
+#   "name": "build a house",
+#   "purpose": "I want a new house by this year",
+#   "target_amount": 500000.00,
+#   "category": "living expense",
+#   "target_date": "10/10/2024",
+#   "contribution_type": "Monthly",
+#   "contribution_amount": 40000.00,
+#   "user_id": 2
+# }
