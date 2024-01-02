@@ -1,5 +1,5 @@
 # app/controllers/passwords_controller.rb
-class PasswordsController < ApplicationController
+class Api::V1::PasswordsController < ApplicationController
     # ...
 
     def reset

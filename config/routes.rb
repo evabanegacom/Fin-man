@@ -1,17 +1,36 @@
 Rails.application.routes.draw do
-  # User registration and activation routes
-  resources :users, only: [:create]
-  get '/activate/:token', to: 'users#activate', as: 'activate_account'
-  post '/activate/:token', to: 'users#activate'
+  root 'static#index'
+  namespace :api do
+    namespace :v1 do
+      resources :incomes
+      resources :debt_mgt do
+        collection do
+          get 'search'
+        end
+      end
+      resources :financial_plans
+      resources :budgets
+      resources :savings
+      resources :expenses
 
-  # User login and logout routes
-  post '/login', to: 'sessions#create'
-  delete '/logout', to: 'sessions#destroy'
+      # User registration and activation routes
+      get '/user/budgets/:user_id', to: 'budgets#userBudgets'
+      resources :users, only: [:create]
+      get '/activate/:token', to: 'users#activate', as: 'activate_account'
+      post '/activate/:token', to: 'users#activate'
 
-  # Password reset routes
-  post '/password/reset', to: 'passwords#reset', as: 'password_reset'
-  get '/password/reset/:reset_token', to: 'passwords#edit', as: 'edit_password'
-  put '/password/reset', to: 'passwords#update', as: 'update_password'
+      # User login and logout routes
+      post '/login', to: 'sessions#create'
+      delete '/logout', to: 'sessions#destroy'
 
-  # Other routes...
+      # Password reset routes
+      post '/password/reset', to: 'passwords#reset', as: 'password_reset'
+      get '/password/reset/:reset_token', to: 'passwords#edit', as: 'edit_password'
+      put '/password/reset', to: 'passwords#update', as: 'update_password'
+
+      # Other API routes...
+    end
+  end
+
+  # Other non-API routes...
 end

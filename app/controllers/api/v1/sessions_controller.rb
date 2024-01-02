@@ -1,5 +1,4 @@
-# app/controllers/sessions_controller.rb
-class SessionsController < ApplicationController
+class Api::V1::SessionsController < ApplicationController
     def create
       user = User.find_by(email: params[:email])
   
@@ -14,7 +13,7 @@ class SessionsController < ApplicationController
     private
   
     def generate_token(user_id)
-      payload = { user_id: user_id }
+      payload = { user_id: user_id, exp: 24.hours.from_now.to_i } # Set the expiry to 24 hours from now
       JWT.encode(payload, Rails.application.secrets.secret_key_base)
     end
   end

@@ -2,12 +2,20 @@
 class User < ApplicationRecord
   # before_create :generate_activation_token, :generate_reset_token
   # Validations
+  mount_uploader :avatar, AvatarUploader
   validates :name, presence: true
   validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }
   validates :password, presence: true, length: { minimum: 8 }
   
   # Associations
   has_secure_password
+
+  has_many :budgets, dependent: :destroy
+  has_many :debt_mgts, dependent: :destroy
+  has_many :expenses, dependent: :destroy
+  has_many :financial_plans, dependent: :destroy
+  has_many :incomes, dependent: :destroy
+  has_many :savings, dependent: :destroy
 
   def generate_reset_token!
     self.reset_token = SecureRandom.urlsafe_base64
