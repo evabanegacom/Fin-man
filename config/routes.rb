@@ -16,6 +16,9 @@ Rails.application.routes.draw do
         collection do
           post 'budget_expenses'
         end
+        member do
+          get 'upcoming_budget_expense' #http://localhost:3001/api/v1/budgets/1/upcoming_budget_expense
+        end
       end
       resources :savings
       resources :expenses

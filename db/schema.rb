@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_01_02_082315) do
+ActiveRecord::Schema[7.0].define(version: 2024_01_02_101421) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -36,6 +36,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_02_082315) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "avatar"
+    t.boolean "completed", default: false, null: false
     t.index ["user_id"], name: "index_budgets_on_user_id"
   end
 
@@ -50,6 +51,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_02_082315) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "avatar"
+    t.boolean "completed", default: false, null: false
     t.index ["user_id"], name: "index_debt_mgts_on_user_id"
   end
 
@@ -66,6 +68,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_02_082315) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "avatar"
+    t.boolean "completed", default: false, null: false
     t.index ["name"], name: "index_expenses_on_name", unique: true
     t.index ["user_id"], name: "index_expenses_on_user_id"
   end
@@ -80,6 +83,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_02_082315) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "avatar"
+    t.boolean "completed", default: false, null: false
     t.index ["user_id"], name: "index_financial_plans_on_user_id"
   end
 
@@ -108,6 +112,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_02_082315) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "avatar"
+    t.boolean "completed", default: false, null: false
     t.index ["user_id"], name: "index_savings_on_user_id"
   end
 

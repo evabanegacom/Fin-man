@@ -33,8 +33,8 @@ class Api::V1::BudgetsController < ApplicationController
   end
 
   def budget_expenses
-    budge_expense_params = params.permit(:name, :amount, :purpose, :budget_id)
-    @budget_expense = BudgetExpense.new(budge_expense_params)
+    budget_expense_params = params.permit(:name, :amount, :purpose, :budget_id)
+    @budget_expense = BudgetExpense.new(budget_expense_params)
     if @budget_expense.save
       render json: @budget_expense, status: :created, location: @budget_expense
     else
@@ -42,7 +42,6 @@ class Api::V1::BudgetsController < ApplicationController
     end
   end
 
-  
   # POST /budgets
 
   # def create
@@ -54,6 +53,64 @@ class Api::V1::BudgetsController < ApplicationController
   #     render json: @budget.errors, status: :unprocessable_entity
   #   end
   # end
+
+  def upcoming_budget_expense
+    budget = Budget.find(params[:id])
+    budget.update(completed: true)
+    # Calculate the sum of existing budget expenses
+    total_expenses = BudgetExpense.where(budget_id: budget.id).sum(:amount)
+  
+    if total_expenses >= budget.target_amount
+      
+      render json: { message: 'Target amount already met' }
+      return
+    end
+
+    # Calculate the upcoming budget expense
+    upcoming_expense = [0, budget.target_amount - total_expenses].max
+  
+    # Find the last date a contribution was made to meet the budget
+    last_contribution_date = BudgetExpense.where(budget_id: budget.id).maximum(:created_at)
+  
+    # Calculate the next contribution date based on the contribution type
+    next_contribution_date =
+      case budget.contribution_type
+      when 'Monthly'
+        if last_contribution_date.present?
+          last_contribution_date + 1.month
+        else
+          [Date.today.beginning_of_month, Date.today].max
+        end
+      when 'Weekly'
+        if last_contribution_date.present?
+          last_contribution_date + 1.week
+        else
+          [Date.today.beginning_of_week, Date.today].max
+        end
+      # Add more cases for other contribution types as needed
+      else
+        nil # Handle other contribution types if applicable
+      end
+  
+    # If the next contribution date has passed and no contribution has been made, set it to the next day
+    if next_contribution_date.present? && next_contribution_date < Date.today
+      next_contribution_date = Date.today + 1.day
+    end
+  
+    render json: {
+      upcoming_expense: upcoming_expense,
+      last_contribution_date: last_contribution_date,
+      next_contribution_date: next_contribution_date,
+      target_date: budget.target_date
+    }
+  end
+  
+  def update_budget_expense
+    budget_expense_params = params.permit(:name, :amount, :purpose)
+    budget_expense = BudgetExpense.find(params[:id])
+    budget_expense.update(budget_expense_params)
+    render json: budget_expense
+  end
 
   def create
     @budget = Budget.new(budget_params)
