@@ -106,10 +106,13 @@ class Api::V1::BudgetsController < ApplicationController
   end
   
   def update_budget_expense
-    budget_expense_params = params.permit(:name, :amount, :purpose)
+    budget_expense_params = params.permit(:name, :amount, :purpose, :budget_id)
     budget_expense = BudgetExpense.find(params[:id])
-    budget_expense.update(budget_expense_params)
-    render json: budget_expense
+    # budget_expense.update(budget_expense_params)
+    if(budget_expense.update(budget_expense_params))
+      render json: budget_expense
+    else
+      render json: budget_expense.errors, status: :unprocessable_entity
   end
 
   def create

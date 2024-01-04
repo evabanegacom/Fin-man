@@ -16,6 +16,7 @@ class User < ApplicationRecord
   has_many :financial_plans, dependent: :destroy
   has_many :incomes, dependent: :destroy
   has_many :savings, dependent: :destroy
+  has_many :notifications, dependent: :destroy
 
   def generate_reset_token!
     self.reset_token = SecureRandom.urlsafe_base64

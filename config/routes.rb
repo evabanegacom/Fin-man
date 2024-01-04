@@ -22,6 +22,9 @@ Rails.application.routes.draw do
       end
       resources :savings
       resources :expenses
+      get 'unread_notifications', to: 'notifications#unread_notifications'
+      # post 'create_other_finance_activity_notification', to: 'notifications#create_other_finance_activity_notification'
+      post 'create_notification', to: 'notifications#create'
 
       # User registration and activation routes
       get '/user/budgets/:user_id', to: 'budgets#userBudgets'

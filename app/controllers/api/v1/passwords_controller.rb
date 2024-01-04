@@ -34,7 +34,6 @@ class Api::V1::PasswordsController < ApplicationController
   
     def update
       user = User.find_by(reset_token: params[:reset_token])
-  
       if user && user.reset_token_valid?
         user.update(password: params[:password], password_confirmation: params[:password_confirmation], reset_token: nil)
         render json: { message: 'Password reset successful' }, status: :ok

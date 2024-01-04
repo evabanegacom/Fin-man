@@ -39,7 +39,7 @@ class Api::V1::UsersController < ApplicationController
       puts "User found and not activated"
       user.update(activated: true)
       user.save(validate: false)
-      # user.skip_password_validation = true  # Skip password validation
+      user.skip_password_validation = true  # Skip password validation
       puts "User updated"
       # user.activation_token = nil
       render json: { message: 'Account activated successfully' }, status: :ok
