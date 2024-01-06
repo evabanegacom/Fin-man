@@ -3,10 +3,19 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       resources :incomes
-      resources :debt_mgt do
+      resources :debt_mgts do
         collection do
           get 'search'
         end
+
+        collection do
+          get 'index'
+        end
+
+        member do 
+          post 'create_debt_payments'
+        end
+         
       end
       resources :financial_plans
       resources :budgets do

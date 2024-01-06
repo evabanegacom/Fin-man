@@ -3,11 +3,15 @@ class Api::V1::BudgetsController < ApplicationController
   # before_action :authenticate_request, only: %i[ create update destroy ]
   # GET /budgets
   def index
-    @budgets = Budget.paginate(page: params[:page], per_page: 20)
-  
-    render json: @budgets
-  end  
+    # Assuming you have a current_user method to get the logged-in user
+    # user_id = current_user.id
+    user_id = params[:user_id]
 
+    # Fetch budgets for the current user
+    @budgets = Budget.where(user_id: user_id).paginate(page: params[:page], per_page: 20)
+
+    render json: @budgets
+  end
   # GET /budgets/1
   def show
     render json: @budget
