@@ -60,12 +60,11 @@ class Api::V1::BudgetsController < ApplicationController
 
   def upcoming_budget_expense
     budget = Budget.find(params[:id])
-    budget.update(completed: true)
     # Calculate the sum of existing budget expenses
     total_expenses = BudgetExpense.where(budget_id: budget.id).sum(:amount)
-  
+    
     if total_expenses >= budget.target_amount
-      
+      budget.update(completed: true)
       render json: { message: 'Target amount already met' }
       return
     end

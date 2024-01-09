@@ -30,14 +30,63 @@ class Api::V1::DebtMgtsController < ApplicationController
   end
 
 
-  def create_debt_payments
-    debt_payment_params = params.permit(:amount, :debt_mgt_id)
+  def create_debt_payment
+    debt_payment_params = params.permit(:name, :amount, :debt_mgt_id)
     @debt_payment = DebtPayment.new(debt_payment_params)
     if @debt_payment.save
-      render json: @debt_payment, status: :created, location: @debt_payment
+      render json: @debt_payment, status: :created
     else
       render json: @debt_payment.errors, status: :unprocessable_entity
     end
+  end
+
+  def upcoming_debt_payment
+    debt_mgt = DebtMgt.find(params[:id])
+    total_expenses = DebtPayment.where(debt_mgt_id: debt_mgt.id).sum(:amount)
+    
+    if total_expenses >= debt_mgt.target_amount
+      debt_mgt.update(completed: true)
+      render json: { message: 'Target amount already met' }
+      return
+    end
+
+    # Calculate the upcoming budget expense
+    upcoming_payment = [0, debt_mgt.target_amount - total_expenses].max
+  
+    # Find the last date a contribution was made to meet the budget
+    last_contribution_date = DebtPayment.where(debt_mgt_id: debt_mgt.id).maximum(:created_at)
+  
+    # Calculate the next contribution date based on the contribution type
+    next_contribution_date =
+      case debt_mgt.contribution_type
+      when 'Monthly'
+        if last_contribution_date.present?
+          last_contribution_date + 1.month
+        else
+          [Date.today.beginning_of_month, Date.today].max
+        end
+      when 'Weekly'
+        if last_contribution_date.present?
+          last_contribution_date + 1.week
+        else
+          [Date.today.beginning_of_week, Date.today].max
+        end
+      # Add more cases for other contribution types as needed
+      else
+        nil # Handle other contribution types if applicable
+      end
+  
+    # If the next contribution date has passed and no contribution has been made, set it to the next day
+    if next_contribution_date.present? && next_contribution_date < Date.today
+      next_contribution_date = Date.today + 1.day
+    end
+  
+    render json: {
+      upcoming_payment: upcoming_payment,
+      last_contribution_date: last_contribution_date,
+      next_contribution_date: next_contribution_date,
+      target_date: debt_mgt.target_date
+    }
   end
 
   # PATCH/PUT /debt_mgts/1
@@ -77,7 +126,7 @@ class Api::V1::DebtMgtsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def debt_mgt_params
-      params.require(:debt_mgt).permit(:name, :purpose, :target_amount, :contribution_type, :contribution_amount, :target_date, :user_id)
+      params.permit(:name, :purpose, :target_amount, :contribution_type, :contribution_amount, :target_date, :user_id)
     end
 end
 

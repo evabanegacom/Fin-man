@@ -13,9 +13,12 @@ Rails.application.routes.draw do
         end
 
         member do 
-          post 'create_debt_payments'
+          post 'create_debt_payment'
         end
-         
+
+        member do
+          get 'upcoming_debt_payment'
+        end
       end
       resources :financial_plans
       resources :budgets do
