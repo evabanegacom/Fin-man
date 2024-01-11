@@ -3,7 +3,7 @@ class Api::V1::IncomesController < ApplicationController
 
   # GET /incomes
   def index
-    @incomes = Income.all
+    @incomes = Income.where(user_id: params[:user_id]).order(created_at: :desc).paginate(page: params[:page], per_page: 20)
 
     render json: @incomes
   end

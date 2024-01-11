@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_01_06_183710) do
+ActiveRecord::Schema[7.0].define(version: 2024_01_09_133655) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -119,6 +119,15 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_06_183710) do
     t.index ["user_id"], name: "index_notifications_on_user_id"
   end
 
+  create_table "saving_budgets", force: :cascade do |t|
+    t.string "name"
+    t.decimal "amount"
+    t.bigint "saving_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["saving_id"], name: "index_saving_budgets_on_saving_id"
+  end
+
   create_table "savings", force: :cascade do |t|
     t.string "name"
     t.string "purpose"
@@ -126,7 +135,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_06_183710) do
     t.string "category"
     t.date "target_date"
     t.string "contribution_type"
-    t.decimal "interest_rate", precision: 10, scale: 2
     t.decimal "contribution_amount", precision: 10, scale: 2
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
@@ -158,5 +166,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_06_183710) do
   add_foreign_key "financial_plans", "users"
   add_foreign_key "incomes", "users"
   add_foreign_key "notifications", "users"
+  add_foreign_key "saving_budgets", "savings"
   add_foreign_key "savings", "users"
 end

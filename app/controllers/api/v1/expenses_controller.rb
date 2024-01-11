@@ -3,8 +3,20 @@ class Api::V1::ExpensesController < ApplicationController
 
   # GET /expenses
   def index
-    @expenses = Expense.all
+    # show all expenses for a specific user order by most recent
+    @expenses = Expense.where(user_id: params[:user_id]).order(created_at: :desc).paginate(page: params[:page], per_page: 20)
+    render json: @expenses
+  end
 
+  def show_weekly_made_expenses
+    # show all expenses for a specific user order by most recent
+    @expenses = Expense.where(user_id: params[:user_id]).where("created_at >= ?", Date.today.beginning_of_week).order(created_at: :desc).paginate(page: params[:page], per_page: 20)
+    render json: @expenses
+  end
+
+  def show_monthly_made_expenses
+    # show all expenses for a specific user order by most recent
+    @expenses = Expense.where(user_id: params[:user_id]).where("created_at >= ?", Date.today.beginning_of_month).order(created_at: :desc).paginate(page: params[:page], per_page: 20)
     render json: @expenses
   end
 

@@ -32,7 +32,17 @@ Rails.application.routes.draw do
           get 'upcoming_budget_expense' #http://localhost:3001/api/v1/budgets/1/upcoming_budget_expense
         end
       end
-      resources :savings
+      resources :savings do 
+        collection do
+          get 'search'
+        end
+        member do
+          post 'add_savings_budget'
+        end
+        member do
+          get 'upcoming_savings_budget'
+        end
+      end
       resources :expenses
       get 'unread_notifications', to: 'notifications#unread_notifications'
       # post 'create_other_finance_activity_notification', to: 'notifications#create_other_finance_activity_notification'

@@ -62,50 +62,19 @@ class Api::V1::BudgetsController < ApplicationController
     budget = Budget.find(params[:id])
     # Calculate the sum of existing budget expenses
     total_expenses = BudgetExpense.where(budget_id: budget.id).sum(:amount)
-    
+    # calculat the sum of budget expenses for that month
+    monthly_expenses = BudgetExpense.where(budget_id: budget.id).where("created_at >= ?", Date.today.beginning_of_month).sum(:amount)
+
     if total_expenses >= budget.target_amount
       budget.update(completed: true)
-      render json: { message: 'Target amount already met' }
+      render json: { message: 'Target amount already met or exceeded' }
       return
     end
 
-    # Calculate the upcoming budget expense
-    upcoming_expense = [0, budget.target_amount - total_expenses].max
+    remaining_expense = [0, budget.target_amount - total_expenses].max
+    last_contribution_date = BudgetExpense.where(budget_id: budget.id).maximum(:created_at)   
   
-    # Find the last date a contribution was made to meet the budget
-    last_contribution_date = BudgetExpense.where(budget_id: budget.id).maximum(:created_at)
-  
-    # Calculate the next contribution date based on the contribution type
-    next_contribution_date =
-      case budget.contribution_type
-      when 'Monthly'
-        if last_contribution_date.present?
-          last_contribution_date + 1.month
-        else
-          [Date.today.beginning_of_month, Date.today].max
-        end
-      when 'Weekly'
-        if last_contribution_date.present?
-          last_contribution_date + 1.week
-        else
-          [Date.today.beginning_of_week, Date.today].max
-        end
-      # Add more cases for other contribution types as needed
-      else
-        nil # Handle other contribution types if applicable
-      end
-  
-    # If the next contribution date has passed and no contribution has been made, set it to the next day
-    if next_contribution_date.present? && next_contribution_date < Date.today
-      next_contribution_date = Date.today + 1.day
-    end
-  
-    render json: {
-      upcoming_expense: upcoming_expense,
-      last_contribution_date: last_contribution_date,
-      next_contribution_date: next_contribution_date,
-      target_date: budget.target_date
-    }
+    render json: { upcoming_expense: remaining_expense, target_date: budget.target_date, monthly_expenses: monthly_expenses, last_contribution_date: last_contribution_date }
   end
   
   def update_budget_expense
