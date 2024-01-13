@@ -53,10 +53,7 @@ Rails.application.routes.draw do
       resources :users, only: %i[create index]
       get '/activate/:token', to: 'users#activate', as: 'activate_account'
       post '/activate/:token', to: 'users#activate'
-
-      # User login and logout routes
-      post '/login', to: 'sessions#create'
-      delete '/logout', to: 'sessions#destroy'
+      post '/sign_in', to: 'users#sign_in'
 
       # Password reset routes
       post '/password/reset', to: 'passwords#reset', as: 'password_reset'

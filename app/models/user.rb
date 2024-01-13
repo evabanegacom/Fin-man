@@ -30,5 +30,10 @@ class User < ApplicationRecord
   def reset_token_valid?
     reset_token_expires_at.present? && reset_token_expires_at > Time.now
   end
+
+  def as_json(options = {})
+    super(options.merge({ except: %i[password_digest created_at updated_at] }))
+  end
+  
 end
   

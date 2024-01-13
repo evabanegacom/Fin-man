@@ -15,21 +15,44 @@ class Api::V1::UsersController < ApplicationController
   end
 
   # POST /users
-  def create
-    user = User.new(user_params)
-    if user.save
-      user.update(activation_token: SecureRandom.urlsafe_base64)
-      user.update(activation_token_expires_at: 2.days.from_now)
-      puts "user token #{user.activation_token}"
-  
-      html_template_path = File.expand_path('../../../../views/user_mailer/activation_email.html.erb', __FILE__)
-      send_activation_email(user, html_template_path)
-  
-      render json: { message: 'User created successfully. Please check your email for activation instructions.' }, status: :created
-    else
-      render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
-    end
+  # POST /users
+def create
+  user = User.new(user_params)
+
+  if user.save
+    user.update(activation_token: SecureRandom.urlsafe_base64)
+    user.update(activation_token_expires_at: 2.days.from_now)
+
+    # Generate a JWT token for the user
+    jwt_token = generate_jwt_token(user)
+
+    # Send activation email
+    html_template_path = File.expand_path('../../../../views/user_mailer/activation_email.html.erb', __FILE__)
+    send_activation_email(user, html_template_path)
+
+    render json: { message: 'User created successfully. Please check your email for activation instructions.', jwt_token: jwt_token }, status: :created
+  else
+    render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
   end
+end
+
+# Generate JWT token for user
+def generate_jwt_token(user)
+  payload = { user_id: user.id, exp: 1.day.from_now.to_i }
+  JWT.encode(payload, Rails.application.secrets.secret_key_base)
+end
+
+# POST /sign_in
+def sign_in
+  user = User.find_by(email: params[:email])
+
+  if user && user.authenticate(params[:password])
+    jwt_token = generate_jwt_token(user)
+    render json: { message: 'Sign-in successful.', jwt_token: jwt_token }, status: :ok
+  else
+    render json: { error: 'Invalid credentials.' }, status: :unauthorized
+  end
+end
 
   def activate
     puts "Activation token received: #{params[:token]}"
