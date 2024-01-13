@@ -15,29 +15,13 @@ class Api::V1::UsersController < ApplicationController
   end
 
   # POST /users
-  # def create
-  #   user = User.new(user_params)
-  #   # user.activated = false
-  #   if user.save
-  #     user.update(activation_token: SecureRandom.urlsafe_base64)
-  #     user.update(activation_token_expires_at: 2.days.from_now)
-  #     puts "user token #{user.activation_token}"
-  #     UserMailer.activation_email(user).deliver_now
-  #     render json: { message: 'User created successfully. Please check your email for activation instructions.' }, status: :created
-  #   else
-  #     render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
-  #   end
-  # end
-
   def create
     user = User.new(user_params)
-  
     if user.save
       user.update(activation_token: SecureRandom.urlsafe_base64)
       user.update(activation_token_expires_at: 2.days.from_now)
       puts "user token #{user.activation_token}"
   
-      # Use Mailjet to send the activation email
       html_template_path = File.expand_path('../../../../views/user_mailer/activation_email.html.erb', __FILE__)
       send_activation_email(user, html_template_path)
   

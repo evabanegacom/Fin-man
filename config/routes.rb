@@ -50,7 +50,7 @@ Rails.application.routes.draw do
       post 'generate_activation_token', to: 'users#generate_activation_token'
       # User registration and activation routes
       get '/user/budgets/:user_id', to: 'budgets#userBudgets'
-      resources :users, only: [:create]
+      resources :users, only: %i[create index]
       get '/activate/:token', to: 'users#activate', as: 'activate_account'
       post '/activate/:token', to: 'users#activate'
 
