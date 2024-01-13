@@ -73,6 +73,9 @@ GEM
     bootsnap (1.16.0)
       msgpack (~> 1.2)
     builder (3.2.4)
+    bullet (7.1.5)
+      activesupport (>= 3.0.0)
+      uniform_notifier (~> 1.11)
     carrierwave (2.2.2)
       activemodel (>= 5.0.0)
       activesupport (>= 5.0.0)
@@ -125,6 +128,10 @@ GEM
       net-imap
       net-pop
       net-smtp
+    mailjet (1.7.3)
+      activesupport (>= 3.1.0)
+      rack (>= 1.4.0)
+      rest-client (>= 2.0.0)
     marcel (1.0.2)
     method_source (1.0.0)
     mime-types (3.4.1)
@@ -208,6 +215,7 @@ GEM
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.8.2)
+    uniform_notifier (1.16.0)
     websocket-driver (0.7.5)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
@@ -220,6 +228,7 @@ PLATFORMS
 DEPENDENCIES
   bcrypt (~> 3.1.7)
   bootsnap
+  bullet
   carrierwave
   cloudinary
   debug
@@ -227,6 +236,7 @@ DEPENDENCIES
   dotenv-rails
   httparty
   jwt (~> 2.2.2)
+  mailjet
   pg (~> 1.1)
   puma (~> 5.0)
   rack-cors

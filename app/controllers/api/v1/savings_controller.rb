@@ -26,11 +26,11 @@ class Api::V1::SavingsController < ApplicationController
 
   def add_savings_budget
     saving_budget_params = params.permit(:name, :amount, :saving_id)
-    @budget_expense = SavingBudget.new(saving_budget_params)
-    if @budget_expense.save
-      render json: @budget_expense, status: :created
+    @savings_expense = SavingBudget.new(saving_budget_params)
+    if @savings_expense.save
+      render json: @savings_expense, status: :created
     else
-      render json: @budget_expense.errors, status: :unprocessable_entity
+      render json: @savings_expense.errors, status: :unprocessable_entity
     end
   end
 
@@ -82,7 +82,7 @@ class Api::V1::SavingsController < ApplicationController
       upcoming_savings: upcoming_saving,
       last_contribution_date: last_contribution_date,
       next_contribution_date: next_contribution_date,
-      target_date: saving.target_date
+      target_date: saving.target_date,
       monthly_saving_budget: monthly_saving_budget
     }
   end

@@ -36,12 +36,15 @@ gem "bootsnap", require: false
 
 gem 'carrierwave'
 gem 'cloudinary'
+# Gemfile
 
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 # gem "image_processing", "~> 1.2"
-
+gem 'mailjet'
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
+gem 'bullet', group: :develpoment
 gem "rack-cors"
+
 
 group :development, :test do
   gem 'dotenv-rails'

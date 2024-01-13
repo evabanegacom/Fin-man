@@ -17,10 +17,10 @@ class Api::V1::BudgetsController < ApplicationController
     render json: @budget
   end
 
-  def userBudgets
-    @budgets = Budget.where(user_id: params[:user_id])
-    render json: @budgets
-  end
+  # def userBudgets
+  #   @budgets = Budget.where(user_id: params[:user_id])
+  #   render json: @budgets
+  # end
 
   def search
     query = Budget.all
@@ -85,13 +85,14 @@ class Api::V1::BudgetsController < ApplicationController
       render json: budget_expense
     else
       render json: budget_expense.errors, status: :unprocessable_entity
+    end
   end
 
   def create
     @budget = Budget.new(budget_params)
 
     if @budget.save
-      render json: @budget, status: :created, location: @budget
+      render json: @budget, status: :created
     else
       render json: @budget.errors, status: :unprocessable_entity
     end
@@ -107,9 +108,15 @@ class Api::V1::BudgetsController < ApplicationController
   end
 
   # DELETE /budgets/1
-  def destroy
-    @budget.destroy
+  # DELETE /budgets/1
+def destroy
+  if @budget.destroy
+    render json: { message: 'Budget deleted successfully' }
+  else
+    render json: { error: 'Failed to delete budget' }, status: :unprocessable_entity
   end
+end
+
 
   private
     # Use callbacks to share common setup or constraints between actions.
@@ -119,7 +126,7 @@ class Api::V1::BudgetsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def budget_params
-      params.permit(:name, :purpose, :target_amount, :category, :target_date, :contribution_type, :contribution_amount, :user_id)
+      params.permit(:name, :purpose, :target_amount, :category, :target_date, :contribution_type, :contribution_amount, :user_id, :avatar)
     end
 end
 

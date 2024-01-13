@@ -8,6 +8,8 @@ class Api::V1::DebtMgtsController < ApplicationController
     user_id = params[:user_id]
 
     # Fetch budgets for the current user
+    # http://localhost:3001/budgets?user_id=your_user_id&page=1
+
     @debts = DebtMgt.where(user_id: user_id).paginate(page: params[:page], per_page: 20)
 
     render json: @debts
@@ -126,7 +128,7 @@ class Api::V1::DebtMgtsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def debt_mgt_params
-      params.permit(:name, :purpose, :target_amount, :contribution_type, :contribution_amount, :target_date, :user_id)
+      params.permit(:name, :purpose, :target_amount, :contribution_type, :contribution_amount, :target_date, :user_id, :avatar)
     end
 end
 

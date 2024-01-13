@@ -1,3 +1,4 @@
+require 'mailjet'
 class Api::V1::UsersController < ApplicationController
   before_action :set_user, only: %i[ show update destroy ]
 
@@ -14,15 +15,31 @@ class Api::V1::UsersController < ApplicationController
   end
 
   # POST /users
+  # def create
+  #   user = User.new(user_params)
+  #   # user.activated = false
+  #   if user.save
+  #     user.update(activation_token: SecureRandom.urlsafe_base64)
+  #     user.update(activation_token_expires_at: 2.days.from_now)
+  #     puts "user token #{user.activation_token}"
+  #     UserMailer.activation_email(user).deliver_now
+  #     render json: { message: 'User created successfully. Please check your email for activation instructions.' }, status: :created
+  #   else
+  #     render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
+  #   end
+  # end
+
   def create
     user = User.new(user_params)
-    # user.activated = false
+  
     if user.save
       user.update(activation_token: SecureRandom.urlsafe_base64)
       user.update(activation_token_expires_at: 2.days.from_now)
-      # user.generate_activation_token
       puts "user token #{user.activation_token}"
-      UserMailer.activation_email(user).deliver_now
+  
+      # Use Mailjet to send the activation email
+      send_activation_email(user)
+  
       render json: { message: 'User created successfully. Please check your email for activation instructions.' }, status: :created
     else
       render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
@@ -39,7 +56,7 @@ class Api::V1::UsersController < ApplicationController
       puts "User found and not activated"
       user.update(activated: true)
       user.save(validate: false)
-      user.skip_password_validation = true  # Skip password validation
+      # user.skip_password_validation = true  # Skip password validation
       puts "User updated"
       # user.activation_token = nil
       render json: { message: 'Account activated successfully' }, status: :ok
@@ -48,6 +65,28 @@ class Api::V1::UsersController < ApplicationController
     end
   end
   
+  def generate_activation_token
+    user = User.find_by(email: params[:email])
+
+    if user
+      if user.activated?
+        render json: { message: 'User account is already activated.' }, status: :unprocessable_entity
+      elsif user.activation_token_expired?
+        # Generate a new activation token and set a new expiration date
+        user.update(activation_token: SecureRandom.urlsafe_base64)
+        user.update(activation_token_expires_at: 2.days.from_now)
+
+        # Send the activation email with the new token
+        UserMailer.activation_email(user).deliver_now
+
+        render json: { message: 'New activation token generated. Please check your email for activation instructions.' }, status: :ok
+      else
+        render json: { message: 'User account is still pending activation.' }, status: :unprocessable_entity
+      end
+    else
+      render json: { error: 'User not found.' }, status: :not_found
+    end
+  end
 
   # PATCH/PUT /users/1
   def update
@@ -73,11 +112,53 @@ class Api::V1::UsersController < ApplicationController
     def user_params
       params.permit(:name, :email, :password, :password_confirmation, :avatar)
     end
+
+    def send_activation_email(user)
+      Mailjet.configure do |config|
+        config.api_key = 'd531ec7b0745a031ceae938c4730e889'
+        config.secret_key = '0ca4ac8ba4e43cf761f3a9bc07df7a45'
+        config.api_version = 'v3.1' # or your preferred Mailjet API version
+      end
+    
+      # Replace with your Mailjet sender email and name
+      sender_email = 'udegbue69@gmail.com'
+      sender_name = 'Precious Udegbue'
+      html_template_path = File.expand_path('../../../../views/user_mailer/activation_email.html.erb', __FILE__)
+      html_content = File.read(html_template_path)
+      
+      # Use ERB to render dynamic content
+      template = ERB.new(html_content)
+      rendered_html = template.result(binding)
+      
+      # The rest of your code...
+      
+      variable_params = {
+        'activation_link' => "https://fin-man.fly.dev/api/v1/activate/#{user.activation_token}"
+        # Add any other variables you want to include in your email template
+      }
+    
+      message = Mailjet::Send.create(messages: [{
+        'From' => {
+          'Email' => sender_email,
+          'Name' => sender_name
+        },
+        'To' => [{
+          'Email' => user.email,
+          'Name' => user.name
+        }],
+        # 'TemplateID' => 'YOUR_MAILJET_TEMPLATE_ID',
+        'Subject'=> 'My first Mailjet Email!',
+    'TextPart'=> 'Activate your account',
+    'HTMLPart'=> rendered_html,
+        'Variables' => variable_params
+      }])
+      puts "Mailjet response: #{message.attributes.inspect}"
+    end
 end
 
 # {
 #   "name": "louis debroglie",
 #   "email": "precious@yahoo.com",
 #   "password": "eaagleclaw",
-#   "password_confirmattion": "eagleclaw"
+#   "password_confirmation": "eagleclaw"
 # }

@@ -47,7 +47,7 @@ Rails.application.routes.draw do
       get 'unread_notifications', to: 'notifications#unread_notifications'
       # post 'create_other_finance_activity_notification', to: 'notifications#create_other_finance_activity_notification'
       post 'create_notification', to: 'notifications#create'
-
+      post 'generate_activation_token', to: 'users#generate_activation_token'
       # User registration and activation routes
       get '/user/budgets/:user_id', to: 'budgets#userBudgets'
       resources :users, only: [:create]
