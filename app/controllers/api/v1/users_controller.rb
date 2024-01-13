@@ -38,7 +38,8 @@ class Api::V1::UsersController < ApplicationController
       puts "user token #{user.activation_token}"
   
       # Use Mailjet to send the activation email
-      send_activation_email(user)
+      html_template_path = File.expand_path('../../../../views/user_mailer/activation_email.html.erb', __FILE__)
+      send_activation_email(user, html_template_path)
   
       render json: { message: 'User created successfully. Please check your email for activation instructions.' }, status: :created
     else
@@ -113,7 +114,7 @@ class Api::V1::UsersController < ApplicationController
       params.permit(:name, :email, :password, :password_confirmation, :avatar)
     end
 
-    def send_activation_email(user)
+    def send_activation_email(user, html_template_path)
       Mailjet.configure do |config|
         config.api_key = 'd531ec7b0745a031ceae938c4730e889'
         config.secret_key = '0ca4ac8ba4e43cf761f3a9bc07df7a45'
@@ -122,8 +123,7 @@ class Api::V1::UsersController < ApplicationController
     
       # Replace with your Mailjet sender email and name
       sender_email = 'udegbue69@gmail.com'
-      sender_name = 'Precious Udegbue'
-      html_template_path = File.expand_path('../../../../views/user_mailer/activation_email.html.erb', __FILE__)
+      sender_name = 'Financial wellness'
       html_content = File.read(html_template_path)
       
       # Use ERB to render dynamic content
@@ -147,7 +147,7 @@ class Api::V1::UsersController < ApplicationController
           'Name' => user.name
         }],
         # 'TemplateID' => 'YOUR_MAILJET_TEMPLATE_ID',
-        'Subject'=> 'My first Mailjet Email!',
+        'Subject'=> 'Account activation',
     'TextPart'=> 'Activate your account',
     'HTMLPart'=> rendered_html,
         'Variables' => variable_params
