@@ -18,20 +18,53 @@ class Api::V1::PasswordsController < ApplicationController
     end
   end
 
-  # ...
+  def edit
+    puts "Reset token received: #{params[:reset_token]}"
+    @user = User.find_by(reset_token: params[:reset_token])
+    puts "User found: #{@user}"
+    if @user && @user.reset_token_valid?
+      render json: { message: 'Reset password' }, status: :ok
+    elsif @user && !@user.reset_token_valid?
+      render json: { error: 'Reset token has expired' }, status: :unprocessable_entity
+    else
+      render json: { error: 'Invalid reset token' }, status: :unprocessable_entity
+    end
+  end
+
+  def update
+    user = User.find_by(reset_token: params[:reset_token])
+  
+    if user && user.reset_token_valid?
+      new_password = params[:new_password]
+      
+      if user.update(password: new_password, password_confirmation: new_password, reset_token: nil)
+        # Successfully updated the password
+        render json: { message: 'Password reset successful' }, status: :ok
+      else
+        # Failed to update the password
+        render json: { error: user.errors.full_messages }, status: :unprocessable_entity
+      end
+    elsif user && !user.reset_token_valid?
+      # Reset token has expired
+      render json: { error: 'Reset token has expired' }, status: :unprocessable_entity
+    else
+      # Invalid reset token
+      render json: { error: 'Invalid reset token' }, status: :unprocessable_entity
+    end
+  end  
 
   private
 
   def send_password_reset_email(user)
     Mailjet.configure do |config|
-      config.api_key = 'your_mailjet_api_key'
-      config.secret_key = 'your_mailjet_secret_key'
+      config.api_key = ENV['APP_API_KEY']
+      config.secret_key = ENV['APP_SECRET_KEY']
       config.api_version = 'v3.1' # or your preferred Mailjet API version
     end
 
     # Replace with your Mailjet sender email and name
-    sender_email = 'your_sender_email@example.com'
-    sender_name = 'Your Sender Name'
+    sender_email = 'udegbue69@gmail.com'
+    sender_name = 'Financial wellness'
     html_template_path = File.expand_path('../../../../views/user_mailer/password_reset_email.html.erb', __FILE__)
 
     # Use ERB to render dynamic content

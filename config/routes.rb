@@ -52,13 +52,13 @@ Rails.application.routes.draw do
       get '/user/budgets/:user_id', to: 'budgets#userBudgets'
       resources :users, only: %i[create index]
       get '/activate/:token', to: 'users#activate', as: 'activate_account'
-      post '/activate/:token', to: 'users#activate'
+      # post '/activate/:token', to: 'users#activate'
       post '/sign_in', to: 'users#sign_in'
 
       # Password reset routes
-      post '/password/reset', to: 'passwords#reset', as: 'password_reset'
+      post '/password/reset', to: 'passwords#reset', as: 'reset_password'
       get '/password/reset/:reset_token', to: 'passwords#edit', as: 'edit_password'
-      put '/password/reset', to: 'passwords#update', as: 'update_password'
+      put '/password/update', to: 'passwords#update', as: 'update_password'
 
       # Other API routes...
     end

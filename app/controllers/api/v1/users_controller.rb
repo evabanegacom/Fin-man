@@ -123,8 +123,8 @@ end
 
     def send_activation_email(user, html_template_path)
       Mailjet.configure do |config|
-        config.api_key = 'd531ec7b0745a031ceae938c4730e889'
-        config.secret_key = '0ca4ac8ba4e43cf761f3a9bc07df7a45'
+        config.api_key = ENV['APP_API_KEY']
+        config.secret_key = ENV['APP_SECRET_KEY']
         config.api_version = 'v3.1' # or your preferred Mailjet API version
       end
     
