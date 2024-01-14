@@ -40,7 +40,7 @@ class Api::V1::BudgetsController < ApplicationController
     budget_expense_params = params.permit(:name, :amount, :purpose, :budget_id)
     @budget_expense = BudgetExpense.new(budget_expense_params)
     if @budget_expense.save
-      render json: @budget_expense, status: :created, location: @budget_expense
+      render json: @budget_expense, status: :created
     else
       render json: @budget_expense.errors, status: :unprocessable_entity
     end
