@@ -19,7 +19,6 @@ ENV BUNDLE_DEPLOYMENT="1" \
 RUN gem update --system --no-document && \
     gem install -N bundler
 
-
 # Throw-away build stage to reduce size of final image
 FROM base as build
 
@@ -33,12 +32,18 @@ RUN bundle install && \
     bundle exec bootsnap precompile --gemfile && \
     rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git
 
+# Create directory if it doesn't exist and set permissions
+RUN mkdir -p /rails/public/uploads/tmp && \
+    chmod -R 755 /rails/public/uploads/tmp
+
 # Copy application code
 COPY --link . .
 
-# Precompile bootsnap code for faster boot times
-RUN bundle exec bootsnap precompile app/ lib/
+# Set ownership
+RUN chown -R 1000:1000 /rails/public/uploads/tmp
 
+# Precompile bootsnap code for faster boot times
+RUN cd /rails && bundle exec bootsnap precompile app/ lib/
 
 # Final stage for app image
 FROM base
@@ -52,11 +57,13 @@ RUN apt-get update -qq && \
 COPY --from=build /usr/local/bundle /usr/local/bundle
 COPY --from=build /rails /rails
 
+# Set ownership
+RUN chown -R 1000:1000 /rails/public/uploads/tmp
+
 # Run and own only the runtime files as a non-root user for security
 RUN groupadd --system --gid 1000 rails && \
     useradd rails --uid 1000 --gid 1000 --create-home --shell /bin/bash && \
-    chown -R 1000:1000 db log storage tmp
-USER 1000:1000
+    chown -R 1000:1000 /rails/db /rails/log /rails/storage /rails/tmp
 
 # Deployment options
 ENV RAILS_LOG_TO_STDOUT="1" \
