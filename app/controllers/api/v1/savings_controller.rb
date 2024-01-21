@@ -109,7 +109,7 @@ class Api::V1::SavingsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def saving_params
-      params.require(:saving).permit(:name, :purpose, :target_amount, :category, :target_date, :contribution_type, :contribution_amount, :completed, :user_id)
+      params.permit(:name, :purpose, :target_amount, :category, :target_date, :contribution_type, :contribution_amount, :completed, :user_id)
     end
 end
 
