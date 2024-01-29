@@ -22,7 +22,6 @@ class Api::V1::DebtMgtsController < ApplicationController
   # POST /debt_mgts
   def create
     @debt_mgt = DebtMgt.new(debt_mgt_params)
-
     if @debt_mgt.save
       render json: @debt_mgt, status: :created
     else
