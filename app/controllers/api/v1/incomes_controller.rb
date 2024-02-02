@@ -13,12 +13,19 @@ class Api::V1::IncomesController < ApplicationController
     render json: @income
   end
 
+  def create_income_data
+    income_data_params = params.permit(:name, :amount, :income_id)
+    @income_data = IncomeDatum.new(income_data_params)
+    return render json: @income_data.errors, status: :unprocessable_entity unless @income_data.save
+    render json: @income_data, status: :created
+  end
+
   # POST /incomes
   def create
     @income = Income.new(income_params)
 
     if @income.save
-      render json: @income, status: :created, location: @income
+      render json: @income, status: :created
     else
       render json: @income.errors, status: :unprocessable_entity
     end
@@ -46,6 +53,6 @@ class Api::V1::IncomesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def income_params
-      params.require(:income).permit(:name, :category, :amount, :income_frequency, :user_id)
+      params.permit(:name, :category, :income_frequency, :user_id, :avatar)
     end
 end

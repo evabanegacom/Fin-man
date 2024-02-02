@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_01_09_133655) do
+ActiveRecord::Schema[7.0].define(version: 2024_02_02_112824) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -96,10 +96,18 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_09_133655) do
     t.index ["user_id"], name: "index_financial_plans_on_user_id"
   end
 
+  create_table "income_data", force: :cascade do |t|
+    t.string "name"
+    t.decimal "amount"
+    t.bigint "income_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["income_id"], name: "index_income_data_on_income_id"
+  end
+
   create_table "incomes", force: :cascade do |t|
     t.string "name"
     t.string "category"
-    t.decimal "amount", precision: 10, scale: 2
     t.string "income_frequency"
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
@@ -164,6 +172,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_09_133655) do
   add_foreign_key "debt_payments", "debt_mgts"
   add_foreign_key "expenses", "users"
   add_foreign_key "financial_plans", "users"
+  add_foreign_key "income_data", "incomes"
   add_foreign_key "incomes", "users"
   add_foreign_key "notifications", "users"
   add_foreign_key "saving_budgets", "savings"
