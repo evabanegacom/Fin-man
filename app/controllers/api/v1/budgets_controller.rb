@@ -108,7 +108,6 @@ class Api::V1::BudgetsController < ApplicationController
   end
 
   # DELETE /budgets/1
-  # DELETE /budgets/1
 def destroy
   if @budget.destroy
     render json: { message: 'Budget deleted successfully' }

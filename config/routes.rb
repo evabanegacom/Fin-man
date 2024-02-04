@@ -2,12 +2,13 @@ Rails.application.routes.draw do
   root 'static#index'
   namespace :api do
     namespace :v1 do
+
       resources :incomes do
         collection do
           post 'create_income_data'
         end
       end
-      
+
       resources :debt_mgts do
         collection do
           get 'search'

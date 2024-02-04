@@ -71,6 +71,12 @@ class Api::V1::DebtMgtsController < ApplicationController
         else
           [Date.today.beginning_of_week, Date.today].max
         end
+      when 'Daily'
+        if last_contribution_date.present?
+          last_contribution_date + 1.day
+        else
+          Date.today
+        end
       # Add more cases for other contribution types as needed
       else
         nil # Handle other contribution types if applicable
