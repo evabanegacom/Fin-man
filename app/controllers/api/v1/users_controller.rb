@@ -38,9 +38,17 @@ end
 
 # Generate JWT token for user
 def generate_jwt_token(user)
-  payload = { user_id: user.id, exp: 1.day.from_now.to_i }
+  payload = { user_id: user.id, exp: 1.day.from_now.to_i, email: user.email, name: user.name, avatar: user.avatar, activated: user.activated}
   JWT.encode(payload, Rails.application.secrets.secret_key_base)
 end
+
+# def logged_in_user
+#   if @current_user
+#     render json: { user: @current_user }, status: :ok
+#   else
+#     render json: { error: 'No user logged in.' }, status: :unprocessable_entity
+#   end
+# end
 
 # POST /sign_in
 def sign_in
@@ -48,7 +56,7 @@ def sign_in
 
   if user && user.authenticate(params[:password])
     jwt_token = generate_jwt_token(user)
-    render json: { message: 'Sign-in successful.', jwt_token: jwt_token }, status: :ok
+    render json: { message: 'Sign-in successful.', jwt_token: jwt_token, status: :ok }
   else
     render json: { error: 'Invalid credentials.' }, status: :unauthorized
   end
