@@ -3,8 +3,7 @@ class Api::V1::SavingsController < ApplicationController
 
   # GET /savings
   def index
-    @savings = Saving.all
-
+    @savings = Saving.where(user_id: params[:user_id]).order(created_at: :desc).paginate(page: params[:page], per_page: 20)
     render json: @savings
   end
 
