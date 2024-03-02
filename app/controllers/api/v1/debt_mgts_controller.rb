@@ -8,9 +8,7 @@ class Api::V1::DebtMgtsController < ApplicationController
     user_id = params[:user_id]
 
     # http://localhost:3001/budgets?user_id=your_user_id&page=1
-
-    @debts = DebtMgt.where(user_id: user_id).paginate(page: params[:page], per_page: 20)
-
+    @debts = DebtMgt.where(user_id: params[:user_id]).order(created_at: :desc).paginate(page: params[:page], per_page: 20)
     render json: @debts
   end
 
