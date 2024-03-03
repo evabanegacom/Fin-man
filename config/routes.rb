@@ -15,6 +15,10 @@ Rails.application.routes.draw do
         end
 
         collection do
+          delete 'delete_debtmgt'
+        end
+
+        collection do
           get 'index'
         end
 
@@ -26,6 +30,7 @@ Rails.application.routes.draw do
           get 'upcoming_debt_payment'
         end
       end
+      
       resources :financial_plans
       resources :budgets do
         collection do

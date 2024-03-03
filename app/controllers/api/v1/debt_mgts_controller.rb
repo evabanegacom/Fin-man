@@ -5,8 +5,7 @@ class Api::V1::DebtMgtsController < ApplicationController
   def index
     # Assuming you have a current_user method to get the logged-in user
     # user_id = current_user.id
-    user_id = params[:user_id]
-
+    
     # http://localhost:3001/budgets?user_id=your_user_id&page=1
     @debts = DebtMgt.where(user_id: params[:user_id]).order(created_at: :desc).paginate(page: params[:page], per_page: 20)
     render json: @debts
@@ -25,6 +24,12 @@ class Api::V1::DebtMgtsController < ApplicationController
     else
       render json: @debt_mgt.errors, status: :unprocessable_entity
     end
+  end
+
+  def delete_debtmgt
+    @debt_mgt = DebtMgt.find(params[:id])
+    @debt_mgt.destroy
+    render json: { message: 'Debt Mgt deleted' }
   end
 
 
@@ -89,6 +94,7 @@ class Api::V1::DebtMgtsController < ApplicationController
       upcoming_payment: upcoming_payment,
       last_contribution_date: last_contribution_date,
       next_contribution_date: next_contribution_date,
+      total_payment: total_expenses,
       target_date: debt_mgt.target_date
     }
   end
