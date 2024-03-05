@@ -26,6 +26,14 @@ Rails.application.routes.draw do
           post 'create_debt_payment'
         end
 
+        collection do
+          delete 'delete_debt_payment'
+        end
+
+        collection do
+          get 'debt_payments'
+        end
+
         member do
           get 'upcoming_debt_payment'
         end

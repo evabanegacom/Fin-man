@@ -43,6 +43,17 @@ class Api::V1::DebtMgtsController < ApplicationController
     end
   end
 
+  def delete_debt_payment
+    @debt_payment = DebtPayment.find(params[:id])
+    @debt_payment.destroy
+    render json: { message: 'Debt Payment deleted' }
+  end
+
+  def debt_payments
+    debt_payments = DebtPayment.where(debt_mgt_id: params[:id]).order(created_at: :desc).paginate(page: params[:page], per_page: 20)
+    render json: debt_payments
+  end
+
   def upcoming_debt_payment
     debt_mgt = DebtMgt.find(params[:id])
     total_expenses = DebtPayment.where(debt_mgt_id: debt_mgt.id).sum(:amount)
