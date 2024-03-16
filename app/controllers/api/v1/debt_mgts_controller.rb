@@ -73,19 +73,19 @@ class Api::V1::DebtMgtsController < ApplicationController
     # Calculate the next contribution date based on the contribution type
     next_contribution_date =
       case debt_mgt.contribution_type
-      when 'Monthly'
+      when 'monthly'
         if last_contribution_date.present?
           last_contribution_date + 1.month
         else
           [Date.today.beginning_of_month, Date.today].max
         end
-      when 'Weekly'
+      when 'weekly'
         if last_contribution_date.present?
           last_contribution_date + 1.week
         else
           [Date.today.beginning_of_week, Date.today].max
         end
-      when 'Daily'
+      when 'daily'
         if last_contribution_date.present?
           last_contribution_date + 1.day
         else
