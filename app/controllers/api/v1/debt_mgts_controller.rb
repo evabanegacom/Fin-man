@@ -60,7 +60,7 @@ class Api::V1::DebtMgtsController < ApplicationController
     
     if total_expenses >= debt_mgt.target_amount
       debt_mgt.update(completed: true)
-      render json: { message: 'Target amount already met' }
+      render json: { message: 'Target amount already met', total_payment: total_expenses }
       return
     end
 
