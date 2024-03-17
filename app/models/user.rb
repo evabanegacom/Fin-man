@@ -23,6 +23,12 @@ class User < ApplicationRecord
     self.reset_token_expires_at = 1.day.from_now
   end
 
+  def activation_token_expired?
+    return false unless activation_token_expires_at.present?
+
+    activation_token_expires_at < Time.zone.now
+  end
+
   def activation_token_valid?
     activation_token_expires_at.present? && activation_token_expires_at > Time.now
   end
