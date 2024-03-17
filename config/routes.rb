@@ -72,8 +72,8 @@ Rails.application.routes.draw do
 
       resources :users, only: %i[create index]
       
-      get '/activate/:token', to: 'users#activate', as: 'activate_account'
-      # post '/activate/:token', to: 'users#activate'
+      post '/activate', to: 'users#activate'
+      
       post '/sign_in', to: 'users#sign_in'
 
       # Password reset routes

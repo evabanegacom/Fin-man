@@ -30,7 +30,7 @@ def create
     html_template_path = File.expand_path('../../../../views/user_mailer/activation_email.html.erb', __FILE__)
     send_activation_email(user, html_template_path)
 
-    render json: { message: 'User created successfully. Please check your email for activation instructions.', jwt_token: jwt_token }, status: :created
+    render json: { message: 'Account created check your email for activation instructions.', jwt_token: jwt_token }, status: :created
   else
     render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
   end
