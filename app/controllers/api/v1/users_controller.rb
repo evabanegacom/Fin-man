@@ -93,7 +93,8 @@ end
         user.update(activation_token_expires_at: 2.days.from_now)
 
         # Send the activation email with the new token
-        UserMailer.activation_email(user).deliver_now
+        html_template_path = File.expand_path('../../../../views/user_mailer/activation_email.html.erb', __FILE__)
+        send_activation_email(user, html_template_path)
 
         render json: { message: 'New activation token generated. Please check your email for activation instructions.' }, status: :ok
       else
