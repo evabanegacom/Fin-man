@@ -70,7 +70,7 @@ Rails.application.routes.draw do
       # User registration and activation routes
       get '/user/budgets/:user_id', to: 'budgets#userBudgets'
 
-      resources :users, only: %i[create index]
+      resources :users, only: %i[create index destroy]
       
       post '/activate', to: 'users#activate'
       
