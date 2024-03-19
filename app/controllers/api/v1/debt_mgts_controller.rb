@@ -147,7 +147,7 @@ class Api::V1::DebtMgtsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def debt_mgt_params
-      params.permit(:name, :purpose, :target_amount, :contribution_type, :contribution_amount, :target_date, :user_id, :avatar)
+      params.permit(:name, :purpose, :target_amount, :contribution_type, :contribution_amount, :target_date, :user_id, :avatar, :interest_rate,)
     end
 end
 
