@@ -52,7 +52,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_19_165758) do
     t.datetime "updated_at", null: false
     t.string "avatar"
     t.boolean "completed", default: false, null: false
-    t.decimal "interest_rate", precision: 10, scale: 2, default: "0.0"
+    t.decimal "interest_rate", precision: 10, scale: 2
     t.index ["user_id"], name: "index_debt_mgts_on_user_id"
   end
 
