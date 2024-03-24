@@ -75,9 +75,9 @@ end
       # user.skip_password_validation = true  # Skip password validation
       puts "User updated"
       # user.activation_token = nil
-      render json: { message: 'Account activated successfully', status: :ok }
+      render json: { message: 'Account activated successfully' }, status: :ok
     else
-      render json: { error: 'Invalid activation token', status: :false }
+      render json: { error: 'Invalid activation token' }, status: :unprocessable_entity
     end
   end
   
