@@ -3,7 +3,6 @@ class Api::V1::AggregatesController < ApplicationController
     def savings
         user = User.find(params[:user_id])
         
-        # Initialize variables outside of the loops
         monthly_saving_budget = 0
         yearly_saving_budget = 0
       

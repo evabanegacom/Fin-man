@@ -58,6 +58,6 @@ class Api::V1::ExpensesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def expense_params
-      params.permit(:name, :purpose, :cost, :decimal, :category, :recipient, :user_id, :avatar)
+      params.permit(:name, :purpose, :cost, :category, :recipient, :user_id, :avatar)
     end
 end
