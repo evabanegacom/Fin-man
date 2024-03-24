@@ -10,7 +10,7 @@ class Api::V1::DebtMgtsController < ApplicationController
     @debts = DebtMgt.where(user_id: params[:user_id]).order(created_at: :desc).paginate(page: params[:page], per_page: 20)
     total = DebtMgt.where(user_id: params[:user_id]).count
 
-    render json: { debts: debts, total: total }
+    render json: { debts: @debts, total: total }
   end
 
   # GET /debt_mgts/1
