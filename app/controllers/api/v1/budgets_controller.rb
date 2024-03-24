@@ -9,8 +9,9 @@ class Api::V1::BudgetsController < ApplicationController
 
     # Fetch budgets for the current user
     @budgets = Budget.where(user_id: user_id).paginate(page: params[:page], per_page: 20)
-
-    render json: @budgets
+    total = Budget.where(user_id: user_id).count
+    
+    render { budgets: @budgets, total: total}
   end
   # GET /budgets/1
   def show
