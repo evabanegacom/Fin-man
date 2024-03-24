@@ -8,7 +8,9 @@ class Api::V1::DebtMgtsController < ApplicationController
     
     # http://localhost:3001/budgets?user_id=your_user_id&page=1
     @debts = DebtMgt.where(user_id: params[:user_id]).order(created_at: :desc).paginate(page: params[:page], per_page: 20)
-    render json: @debts, total: DebtMgt.where(user_id: params[:user_id]).count
+    total = DebtMgt.where(user_id: params[:user_id]).count
+
+    render json: { debts: debts, total: total }
   end
 
   # GET /debt_mgts/1
