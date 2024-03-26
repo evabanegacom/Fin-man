@@ -6,12 +6,12 @@ class Api::V1::BudgetsController < ApplicationController
     # Assuming you have a current_user method to get the logged-in user
     # user_id = current_user.id
     user_id = params[:user_id]
-
     # Fetch budgets for the current user
     @budgets = Budget.where(user_id: user_id).paginate(page: params[:page], per_page: 20)
     total = Budget.where(user_id: user_id).count
+    total_pages = (total.to_f / 20).ceil
     
-    render { budgets: @budgets, total: total}
+    render json: { budgets: @budgets, total: total, total_pages: total_pages}
   end
   # GET /budgets/1
   def show
@@ -108,14 +108,11 @@ class Api::V1::BudgetsController < ApplicationController
     end
   end
 
-  # DELETE /budgets/1
-def destroy
-  if @budget.destroy
-    render json: { message: 'Budget deleted successfully' }
-  else
-    render json: { error: 'Failed to delete budget' }, status: :unprocessable_entity
+  def delete_budget
+    @debt_mgt = Budget.find(params[:id])
+    @debt_mgt.destroy
+    render json: { message: 'Debt Mgt deleted' }
   end
-end
 
 
   private

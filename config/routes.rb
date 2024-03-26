@@ -45,7 +45,7 @@ Rails.application.routes.draw do
           get 'search'
         end
         collection do
-          post 'budget_expenses'
+          post 'budget_expenses' #http://localhost:3001/api/v1/budgets/budget_expenses
         end
         member do
           get 'upcoming_budget_expense' #http://localhost:3001/api/v1/budgets/1/upcoming_budget_expense
