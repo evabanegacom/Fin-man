@@ -78,6 +78,8 @@ Rails.application.routes.draw do
 
       get 'monthly_savings', to: 'aggregates#savings'
 
+      get 'recommendations', to: 'recommendations#generate_recommendations'
+
       # Password reset routes
       post '/password/reset', to: 'passwords#reset', as: 'reset_password'
       get '/password/reset/:reset_token', to: 'passwords#edit', as: 'edit_password'
