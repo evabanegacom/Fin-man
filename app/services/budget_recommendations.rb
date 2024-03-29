@@ -1,13 +1,15 @@
+# require 'byebug'
+
 module BudgetRecommendations
     def self.analyze_budgets(user)
         recommendations = []
-      
+        # byebug
+
         user.budgets.each do |budget|
           recommendation = "#{budget.name}: "
       
           # Calculate total budget actual spending
           total_budget_spent = BudgetExpense.where(budget_id: budget.id).sum(:amount)
-      
           # Check if spending exceeds allocated budget
           if total_budget_spent > budget.target_amount
             overspending_amount = total_budget_spent - budget.target_amount
@@ -37,8 +39,6 @@ module BudgetRecommendations
           recommendation += savings_prioritization_recommendation(budget)
           recommendation += contingency_planning_recommendation(budget)
           recommendation += track_discretionary_spending_recommendation(budget)
-          recommendation += utilize_technology_recommendation(budget)
-          recommendation += celebrate_milestones_recommendation(budget)
       
           recommendations << { category: "Budget", recommendation: recommendation }
         end

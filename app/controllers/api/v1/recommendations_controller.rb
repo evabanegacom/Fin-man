@@ -5,7 +5,7 @@ class Api::V1::RecommendationsController < ApplicationController
 
   def generate_recommendations
     user = User.find(params[:user_id])
-
+    
     # Analyze user's budget data
     budget_recommendations = BudgetRecommendations.analyze_budgets(user)
 
@@ -25,8 +25,8 @@ class Api::V1::RecommendationsController < ApplicationController
     income_recommendation = maximize_income(user)
 
     # Compile all recommendations
-    recommendations = [ debt_recommendation, savings_recommendation, financial_plan_recommendation, expense_recommendation, income_recommendation]
-
+    recommendations = [budget_recommendations, debt_recommendation, savings_recommendation, financial_plan_recommendation, expense_recommendation, income_recommendation]
+   puts budget_recommendations
     render json: recommendations
   end
 
