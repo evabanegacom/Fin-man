@@ -75,7 +75,7 @@ class Api::V1::BudgetsController < ApplicationController
     remaining_expense = [0, budget.target_amount - total_expenses].max
     last_contribution_date = BudgetExpense.where(budget_id: budget.id).maximum(:created_at)   
   
-    render json: { upcoming_expense: remaining_expense, target_date: budget.target_date, monthly_expenses: monthly_expenses, last_contribution_date: last_contribution_date }
+    render json: { upcoming_expense: remaining_expense, target_date: budget.target_date, monthly_expenses: monthly_expenses, last_contribution_date: last_contribution_date, amount_used: total_expenses }
   end
   
   def update_budget_expense
