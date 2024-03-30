@@ -47,6 +47,11 @@ class Api::V1::BudgetsController < ApplicationController
     end
   end
 
+  def budget_usage
+    debt_payments = BudgetExpense.where(budget_id: params[:id]).order(created_at: :desc)
+    render json: debt_payments
+  end
+
   # POST /budgets
 
   # def create

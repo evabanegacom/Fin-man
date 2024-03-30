@@ -53,7 +53,7 @@ class Api::V1::DebtMgtsController < ApplicationController
   end
 
   def debt_payments
-    debt_payments = DebtPayment.where(debt_mgt_id: params[:id]).order(created_at: :desc).paginate(page: params[:page], per_page: 20)
+    debt_payments = DebtPayment.where(debt_mgt_id: params[:id]).order(created_at: :desc)
     render json: debt_payments
   end
 

@@ -50,6 +50,9 @@ Rails.application.routes.draw do
         member do
           get 'upcoming_budget_expense' #http://localhost:3001/api/v1/budgets/1/upcoming_budget_expense
         end
+        collection do
+          get 'budget_usage' #http://localhost:3001/api/v1/budgets/budget_usage
+        end
       end
       resources :savings do 
         collection do
