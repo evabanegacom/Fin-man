@@ -74,8 +74,7 @@ class Api::V1::BudgetsController < ApplicationController
 
     if total_expenses >= budget.target_amount
       budget.update(completed: true)
-      render json: { message: 'Target amount already met', total_payment: total_expenses }
-
+      render json: { message: 'Target amount already met', total_payment: total_expenses, expenses_count: expenses_count}
       return
     end
 
