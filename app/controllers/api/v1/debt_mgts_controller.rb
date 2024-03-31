@@ -60,6 +60,7 @@ class Api::V1::DebtMgtsController < ApplicationController
   def upcoming_debt_payment
     debt_mgt = DebtMgt.find(params[:id])
     total_expenses = DebtPayment.where(debt_mgt_id: debt_mgt.id).sum(:amount)
+    expenses_count = DebtPayment.where(debt_mgt_id: debt_mgt.id).count
     
     if total_expenses >= debt_mgt.target_amount
       debt_mgt.update(completed: true)
@@ -109,7 +110,8 @@ class Api::V1::DebtMgtsController < ApplicationController
       last_contribution_date: last_contribution_date,
       next_contribution_date: next_contribution_date,
       total_payment: total_expenses,
-      target_date: debt_mgt.target_date
+      target_date: debt_mgt.target_date,
+      expenses_count: expenses_count
     }
   end
 

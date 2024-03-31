@@ -68,6 +68,7 @@ class Api::V1::BudgetsController < ApplicationController
     budget = Budget.find(params[:id])
     # Calculate the sum of existing budget expenses
     total_expenses = BudgetExpense.where(budget_id: budget.id).sum(:amount)
+    expenses_count = BudgetExpense.where(budget_id: budget.id).count
     # calculat the sum of budget expenses for that month
     monthly_expenses = BudgetExpense.where(budget_id: budget.id).where("created_at >= ?", Date.today.beginning_of_month).sum(:amount)
 
@@ -81,7 +82,7 @@ class Api::V1::BudgetsController < ApplicationController
     remaining_expense = [0, budget.target_amount - total_expenses].max
     last_contribution_date = BudgetExpense.where(budget_id: budget.id).maximum(:created_at)   
   
-    render json: { upcoming_expense: remaining_expense, target_date: budget.target_date, monthly_expenses: monthly_expenses, last_contribution_date: last_contribution_date, amount_used: total_expenses }
+    render json: { upcoming_expense: remaining_expense, target_date: budget.target_date, monthly_expenses: monthly_expenses, last_contribution_date: last_contribution_date, amount_used: total_expenses, expenses_count: expenses_count }
   end
   
   def update_budget_expense

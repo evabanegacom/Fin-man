@@ -44,15 +44,23 @@ Rails.application.routes.draw do
         collection do
           get 'search'
         end
+        
         collection do
           post 'budget_expenses' #http://localhost:3001/api/v1/budgets/budget_expenses
         end
+
         member do
           get 'upcoming_budget_expense' #http://localhost:3001/api/v1/budgets/1/upcoming_budget_expense
         end
+
         collection do
           get 'budget_usage' #http://localhost:3001/api/v1/budgets/budget_usage
         end
+
+        collection do
+          delete 'delete_budget'
+        end
+
       end
       resources :savings do 
         collection do
