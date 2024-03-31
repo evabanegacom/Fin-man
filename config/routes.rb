@@ -11,7 +11,7 @@ Rails.application.routes.draw do
 
       resources :debt_mgts do
         collection do
-          get 'search'
+          get 'search_by_name_or_date_created' #http://localhost:3000/api/v1/debt_mgts/search_by_name_or_date_created?user_id=39&name=testing
         end
 
         collection do

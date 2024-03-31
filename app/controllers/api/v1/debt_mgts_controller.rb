@@ -19,6 +19,14 @@ class Api::V1::DebtMgtsController < ApplicationController
     render json: @debt_mgt
   end
 
+  def search_by_name_or_date_created
+    user = User.find(params[:user_id])
+    query = DebtMgt.where(user_id: user.id)
+    query = query.where("name ILIKE ?", "%#{params[:name]}%") if params[:name].present?
+    query = query.where("created_at = ?", params[:created_at]) if params[:created_at].present?
+    render json: query
+  end
+
   # POST /debt_mgts
   def create
     @debt_mgt = DebtMgt.new(debt_mgt_params)
