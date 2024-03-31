@@ -22,10 +22,20 @@ class Api::V1::DebtMgtsController < ApplicationController
   def search_by_name_or_date_created
     user = User.find(params[:user_id])
     query = DebtMgt.where(user_id: user.id)
-    query = query.where("name ILIKE ?", "%#{params[:name]}%") if params[:name].present?
-    query = query.where("created_at = ?", params[:created_at]) if params[:created_at].present?
+    
+    if params[:name].present?
+      query = query.where("name ILIKE ?", "%#{params[:name]}%")
+    end
+    
+    if params[:created_at].present?
+      date = Date.parse(params[:created_at])
+      start_of_day = date.beginning_of_day
+      end_of_day = date.end_of_day
+      query = query.where(created_at: start_of_day..end_of_day)
+    end
+    
     render json: query
-  end
+  end  
 
   # POST /debt_mgts
   def create
