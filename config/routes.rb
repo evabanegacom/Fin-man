@@ -11,8 +11,9 @@ Rails.application.routes.draw do
 
       resources :debt_mgts do
         collection do
-          get 'search_by_name_or_date_created' #http://localhost:3000/api/v1/debt_mgts/search_by_name_or_date_created?user_id=39&name=testing
+          get 'search_by_name_or_date_created'
         end
+        #http://localhost:3000/api/v1/debt_mgts/search_by_name_or_date_created?user_id=39&name=testing
 
         collection do
           delete 'delete_debtmgt'
